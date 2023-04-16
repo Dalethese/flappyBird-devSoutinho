@@ -85,6 +85,24 @@ const chao = {
     }
 }
 
+const menssagemGetReady = {
+    spriteX: 134,
+    spriteY: 0,
+    largura: 174,
+    altura: 152,
+    x: (canvas.width / 2) - 174 / 2,
+    y: 50,
+    desenha() {
+        contexto.drawImage(
+            sprites,
+            menssagemGetReady.spriteX, menssagemGetReady.spriteY,
+            menssagemGetReady.largura, menssagemGetReady.altura,
+            menssagemGetReady.x, menssagemGetReady.y,
+            menssagemGetReady.largura, menssagemGetReady.altura
+        );
+    }
+}
+
 
 function loop() {
     flappyBird.atualiza(); 
@@ -92,6 +110,8 @@ function loop() {
     planoDeFundo.desenha(); 
     chao.desenha(); 
     flappyBird.desenha();
+
+    menssagemGetReady.desenha();
 
     requestAnimationFrame(loop);
 }
