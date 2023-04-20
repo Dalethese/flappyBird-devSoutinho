@@ -1,10 +1,16 @@
 console.log('[DevSoutinho] Flappy Bird')
 
 let frames = 0
-
+// [Sons]
 const som_HIT = new Audio();
-som_HIT.src = './efeitos/efeitos_hit.wav'
+const som_Pulo = new Audio();
+const som_ponto = new Audio();
 
+som_HIT.src = './efeitos/efeitos_hit.wav'
+som_Pulo.src = './efeitos/efeitos_pulo.wav'
+som_ponto.src = './efeitos/efeitos_ponto.wav'
+
+// [Imagens]
 const sprites = new Image()
 sprites.src = './sprites.png'
 
@@ -61,8 +67,8 @@ function criaFlappyBird() {
         y: 50,
         pulo: 4.6,
         pula() {
-            console.log('devo Pular');
             flappyBird.velocidade = - flappyBird.pulo;
+            som_Pulo.play()
         },
         gravidade: 0.25,
         velocidade: 0,
@@ -241,6 +247,9 @@ function criaCanos() {
 
                 if (par.x + canos.largura<= 0) {
                     canos.pares.shift();
+                    som_ponto.play();
+                    globais.placar.pontuacao += 1
+
                 }
             })
         },
@@ -284,10 +293,14 @@ const menssagemGameOver = {
             menssagemGameOver.x, menssagemGameOver.y,
             menssagemGameOver.largura, menssagemGameOver.altura
         );
-        
+        // score
         contexto.font = '25px "VT323"'
         contexto.fillStyle = 'black'
         contexto.fillText(globais.placar.pontuacao, 235, 145)
+        contexto.fillText(localStorage.getItem('Best'), 231, 180)
+    },
+    atualiza() {
+        
     }
 }
 // [Telas]
@@ -305,23 +318,18 @@ function mudaParaTela(novaTela) {
 function criaPLacar() {
      const placar = {
         pontuacao: 0,
+        best: 0,
         desenha(){
             contexto.font = '35px "VT323"';
             contexto.textAlign = 'right'
             contexto.fillStyle = 'white';
             contexto.fillText(placar.pontuacao, canvas.width - 10, 35);
         },
-        atualiza(){
-            const intervaloDeFrames = 20;
-            const passouOintervalo = frames % intervaloDeFrames === 0;
-
-            if (passouOintervalo) {
-                placar.pontuacao += 1
-            }
-        }
+        atualiza(){}
      }
     return placar
 }
+
 
 const Telas = {
     INICIO: {
@@ -364,6 +372,13 @@ const Telas = {
             globais.chao.atualiza();
             globais.flappyBird.atualiza(); 
             globais.placar.atualiza();
+
+            if (globais.placar.pontuacao > globais.placar.best) {
+                globais.placar.best = globais.placar.pontuacao
+                localStorage.setItem('Best', globais.placar.best)
+                console.log(globais.placar.best)
+    
+            }
         }
     },
     
@@ -371,7 +386,10 @@ const Telas = {
         desenha(){
             menssagemGameOver.desenha();
         },
-        atualiza(){},
+        atualiza(){
+            globais.placar.atualiza();
+            menssagemGameOver.atualiza();
+        },
         click(){
             mudaParaTela(Telas.INICIO);
         }
@@ -386,7 +404,9 @@ function loop() {
     telaAtiva.atualiza();
 
     frames++
+
     requestAnimationFrame(loop);
+    
 }
 
 window.addEventListener('click', () => {
