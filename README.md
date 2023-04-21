@@ -1,1 +1,1 @@
-- Jogo [./index.html]
+- Jogo ["./index.html"]
