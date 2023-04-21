@@ -297,7 +297,7 @@ const menssagemGameOver = {
         contexto.font = '25px "VT323"'
         contexto.fillStyle = 'black'
         contexto.fillText(globais.placar.pontuacao, 235, 145)
-        contexto.fillText(localStorage.getItem('Best'), 231, 180)
+        contexto.fillText(localStorage.getItem('Best'), 240, 180)
     },
     atualiza() {
         
@@ -325,7 +325,13 @@ function criaPLacar() {
             contexto.fillStyle = 'white';
             contexto.fillText(placar.pontuacao, canvas.width - 10, 35);
         },
-        atualiza(){}
+        atualiza(){
+            if (globais.placar.pontuacao > globais.placar.best) {
+                globais.placar.best = globais.placar.pontuacao
+                localStorage.setItem('Best', globais.placar.best)
+                console.log(globais.placar.best)
+            }
+        }
      }
     return placar
 }
@@ -337,6 +343,10 @@ const Telas = {
             globais.flappyBird = criaFlappyBird()
             globais.chao = criaChao()
             globais.canos = criaCanos()
+
+            if (localStorage.length === 0) {
+                localStorage.setItem('Best', 0)
+            }
         },
         desenha() {
             planoDeFundo.desenha(); 
@@ -372,13 +382,6 @@ const Telas = {
             globais.chao.atualiza();
             globais.flappyBird.atualiza(); 
             globais.placar.atualiza();
-
-            if (globais.placar.pontuacao > globais.placar.best) {
-                globais.placar.best = globais.placar.pontuacao
-                localStorage.setItem('Best', globais.placar.best)
-                console.log(globais.placar.best)
-    
-            }
         }
     },
     
